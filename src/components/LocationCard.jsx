@@ -1,18 +1,34 @@
 import { useState } from 'react'
-import { useLocationData } from '../hooks/useAirQuality'
-import { calcStatus, tempColor, trendPredict, STATUS_COLOR } from '../lib/utils'
+import { useLocationData, useLatestData } from '../hooks/useAirQuality'
+import { calcStatus, tempColor, trendPredict } from '../lib/utils'
 import AQChart from './AQChart'
 
 const METRIKS = ['co2', 'pm1', 'pm25', 'pm10']
 const METRIK_LABEL = { co2: 'CO₂', pm1: 'PM1', pm25: 'PM2.5', pm10: 'PM10' }
 
 export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark }) {
-  const { rows, latest, loading } = useLocationData(isOpen ? lokasi : null)
+  // PERBAIKAN: Selalu ambil latest data untuk preview
+  const { latest: previewLatest, loading: previewLoading } = useLatestData(lokasi)
+  
+  // Data lengkap hanya diambil saat card dibuka
+  const { rows, latest: fullLatest, loading: fullLoading } = useLocationData(isOpen ? lokasi : null)
+  
   const [metrik, setMetrik] = useState('co2')
 
-  // Pakai latest snapshot untuk header (bisa load ringan)
-  const { suhu = '--', kelembapan = '--', co2 = '--', pm1 = '--', pm25 = '--', pm10 = '--' } = latest
-  const status = (co2 !== '--' && pm25 !== '--') ? calcStatus(co2, pm25) : '...'
+  // Gunakan data preview untuk header, data full untuk expand
+  const latest = isOpen && rows.length > 0 ? fullLatest : previewLatest
+  const loading = isOpen ? fullLoading : previewLoading
+
+  const suhu = latest?.suhu ?? '--'
+  const kelembapan = latest?.kelembapan ?? '--'
+  const co2 = latest?.co2 ?? '--'
+  const pm1 = latest?.pm1 ?? '--'
+  const pm25 = latest?.pm25 ?? '--'
+  const pm10 = latest?.pm10 ?? '--'
+  
+  const status = (typeof co2 === 'number' && typeof pm25 === 'number') 
+    ? calcStatus(co2, pm25) 
+    : '...'
   const tc = (typeof suhu === 'number') ? tempColor(suhu) : '#ccc'
 
   const pillCls =
@@ -23,10 +39,29 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
   function handleInfo(e) {
     e.stopPropagation()
     if (!rows.length) return
-    const co2Series = rows.map(r => r.co2)
-    const { pred, dir } = trendPredict(co2Series)
-    const predStatus = pred > 1000 ? 'Buruk' : pred > 700 ? 'Sedang' : 'Baik'
-    onInfo({ lokasi, status, suhu, kelembapan, co2, pm1, pm25, pm10, predCO2: pred, predStatus, dir })
+    
+    try {
+      const co2Series = rows.map(r => r.co2).filter(v => typeof v === 'number')
+      if (co2Series.length === 0) return
+      
+      const { pred, dir } = trendPredict(co2Series)
+      const predStatus = pred > 1000 ? 'Buruk' : pred > 700 ? 'Sedang' : 'Baik'
+      onInfo({ 
+        lokasi, 
+        status, 
+        suhu, 
+        kelembapan, 
+        co2, 
+        pm1, 
+        pm25, 
+        pm10, 
+        predCO2: pred, 
+        predStatus, 
+        dir 
+      })
+    } catch (error) {
+      console.error('Error calculating prediction:', error)
+    }
   }
 
   return (
@@ -38,7 +73,11 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
         </div>
         <div className="card-meta">
           <span className="card-title">{lokasi}</span>
-          <span className={pillCls}>{status}</span>
+          {previewLoading ? (
+            <span className="pill pill-loading">...</span>
+          ) : (
+            <span className={pillCls}>{status}</span>
+          )}
         </div>
         <button className="ibtn" onClick={handleInfo} title="Info & Prediksi" aria-label="Info">
           i
@@ -48,18 +87,22 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
       {/* ── Expand ── */}
       {isOpen && (
         <div className="card-expand">
-          {loading ? (
+          {fullLoading ? (
             <div className="loading-row">Memuat data...</div>
+          ) : rows.length === 0 ? (
+            <div className="loading-row">Tidak ada data tersedia</div>
           ) : (
             <>
               {/* Suhu + Kelembapan */}
               <div className="expand-top">
                 <div className="temp-circle" style={{ borderColor: tc }}>
-                  <span className="temp-val">{typeof suhu === 'number' ? suhu : '--'}°</span>
+                  <span className="temp-val">{typeof suhu === 'number' ? suhu.toFixed(1) : '--'}°</span>
                   <span className="temp-unit">Celsius</span>
                 </div>
                 <div className="hum-block">
-                  <div className="hum-label">Kelembapan: {kelembapan}{typeof kelembapan === 'number' ? '%' : ''}</div>
+                  <div className="hum-label">
+                    Kelembapan: {typeof kelembapan === 'number' ? `${kelembapan.toFixed(1)}%` : '--'}
+                  </div>
                   <div className="hum-bar-bg">
                     <div
                       className="hum-bar-fill"
@@ -67,8 +110,8 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
                     />
                   </div>
                   <div className="hum-sub">
-                    CO₂: {co2}{typeof co2 === 'number' ? ' ppm' : ''} &nbsp;|&nbsp;
-                    PM2.5: {pm25}{typeof pm25 === 'number' ? ' µg/m³' : ''}
+                    CO₂: {typeof co2 === 'number' ? `${co2} ppm` : '--'} &nbsp;|&nbsp;
+                    PM2.5: {typeof pm25 === 'number' ? `${pm25} µg/m³` : '--'}
                   </div>
                 </div>
               </div>
