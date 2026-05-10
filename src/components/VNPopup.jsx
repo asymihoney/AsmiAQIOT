@@ -11,7 +11,7 @@ export default function VNPopup({ data, onClose }) {
     <div className="vn-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div className="vn-row" onClick={e => e.stopPropagation()}>
         {/* Maskot selalu di kiri */}
-        <div className="vn-mascot-wrap" onClick={e => e.stopPropagation()}>
+        <div className="vn-mascot-wrap" onClick={onClose} style={{ cursor: 'pointer' }}>
           <Maskot status={status} size={58} />
         </div>
         <div className="vn-box" onClick={onClose}>
