@@ -19,7 +19,7 @@ export default function App() {
   )
 
   // Ekspresi maskot ikuti status saat popup terbuka,
-  // kembali senyum (Baik) saat popup ditutup
+  // kembali idle saat popup ditutup
   useEffect(() => {
     if (vnData?.status) setGlobal(vnData.status)
     else setGlobal('Idle')
@@ -72,12 +72,15 @@ export default function App() {
 
       </div>
 
-      {/* Maskot di luar app-inner supaya fixed positioning tidak terpotong */}
-      <div className="mascot-float">
-        <Maskot status={globalStatus} size={50} />
-        <span className="mascot-lbl">Maskot</span>
-      </div>
+      {/* Maskot float - HANYA MUNCUL saat popup TIDAK aktif */}
+      {!vnData && (
+        <div className="mascot-float">
+          <Maskot status={globalStatus} size={50} />
+          <span className="mascot-lbl">Maskot</span>
+        </div>
+      )}
 
+      {/* Popup - HANYA MUNCUL saat vnData ada */}
       {vnData && (
         <VNPopup data={vnData} onClose={() => setVnData(null)} />
       )}

@@ -1,8 +1,21 @@
 // ── Status kualitas udara berdasarkan CO2 + PM2.5 ──────────────────────────
 export function calcStatus(co2, pm25) {
-  if (co2 > 1000 || pm25 > 55) return 'Buruk'
-  if (co2 > 700  || pm25 > 35) return 'Sedang'
-  return 'Baik'
+  // Cek kondisi 'Buruk'
+  if (co2 > 1000 || pm25 > 55) {
+    if (co2 > 1000 && pm25 > 55) return 'CO₂ & PM2.5 - Buruk';
+    if (co2 > 1000) return 'CO₂ - Buruk';
+    if (pm25 > 55) return 'PM2.5 - Buruk';
+  }
+
+  // Cek kondisi 'Sedang'
+  if (co2 > 400 || pm25 > 15) {
+    if (co2 > 400 && pm25 > 15) return 'CO₂ & PM2.5 - Sedang';
+    if (co2 > 400) return 'CO₂ - Sedang';
+    if (pm25 > 15) return 'PM2.5 - Sedang';
+  }
+
+  // Jika semua di bawah ambang batas
+  return 'CO₂ & PM2.5 - Baik';
 }
 
 // ── Warna circle suhu 15°C (biru) → 27°C (hijau) → 40°C (merah) ──────────
@@ -36,9 +49,15 @@ export function trendPredict(series) {
 
 // ── Status warna ──────────────────────────────────────────────────────────
 export const STATUS_COLOR = {
-  Baik:   '#4caf50',
-  Sedang: '#ff9800',
-  Buruk:  '#f44336',
+  'CO₂ & PM2.5 - Baik':   '#4caf50',
+  'CO₂ & PM2.5 - Sedang': '#ff9800',
+  'CO₂ - Sedang':         '#ff9800',
+  'PM2.5 - Sedang':       '#ff9800',
+  'Sedang':               '#ff9800',
+  'CO₂ & PM2.5 - Buruk':  '#f44336',
+  'CO₂ - Buruk':          '#f44336',
+  'PM2.5 - Buruk':        '#f44336',
+  'Buruk':                '#f44336'
 }
 
 // ── Mock data (dipakai jika Supabase belum dikonfigurasi) ─────────────────
@@ -59,7 +78,7 @@ function mockSeries(base, n = 24) {
 
 export function buildMockRows(lokasi) {
   const base = {
-    'Kampus E - Koridor E1': { suhu:28, kelembapan:62, co2:520,  pm1:8,  pm25:12, pm10:18  },
+    'Kampus E - Koridor E1': { suhu:10, kelembapan:62, co2:10,  pm1:10,  pm25:10, pm10:10  },
     'Kampus E - Koridor E2': { suhu:31, kelembapan:70, co2:820,  pm1:22, pm25:38, pm10:55  },
     'Kampus G - Kelas G1':   { suhu:34, kelembapan:78, co2:1450, pm1:55, pm25:85, pm10:120 },
     'Kampus G - Parking Lot':{ suhu:29, kelembapan:58, co2:480,  pm1:10, pm25:15, pm10:22  },

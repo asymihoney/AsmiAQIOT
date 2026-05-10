@@ -8,8 +8,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, 
 
 const THRESHOLDS_CONFIG = {
   co2: {
-    baik: 400, buruk: 1000, bahaya: 2000,
-    labels: ['Baik', 'Buruk', 'Bahaya'], colors: ['#22c55e', '#f59e0b', '#ef4444']
+    baik: 400, sedang: 1000, buruk: 2000,
+    labels: ['Baik', 'Sedang', 'Buruk'], colors: ['#22c55e', '#f59e0b', '#ef4444']
   },
   pm25: {
     baik: 15.5, sedang: 55.4, ts: 150.4, buruk: 250.4,

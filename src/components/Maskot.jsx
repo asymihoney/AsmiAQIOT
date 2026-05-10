@@ -13,12 +13,16 @@ import maskotBuruk  from '../assets/maskot-buruk.png'
 
 const IMG = {
   idle:   maskotIdle,
-  Baik:   maskotBaik,
-  Sedang: maskotSedang,
-  Buruk:  maskotBuruk,
+  'CO₂ & PM2.5 - Baik':   maskotBaik,
+  'CO₂ & PM2.5 - Sedang': maskotSedang,
+  'CO₂ - Sedang': maskotSedang,
+  'PM2.5 - Sedang': maskotSedang,
+  'CO₂ & PM2.5 - Buruk':  maskotBuruk,
+  'CO₂ - Buruk':  maskotBuruk,
+  'PM2.5 - Buruk':  maskotBuruk,
 }
 
-export default function Maskot({ status = 'idle', size = 56, ...props }) {
+export default function Maskot({ status = 'idle', size = 2000, ...props }) {
   const src = IMG[status] ?? IMG.idle
 
   return (

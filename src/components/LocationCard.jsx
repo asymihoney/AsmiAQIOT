@@ -32,9 +32,15 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
   const tc = (typeof suhu === 'number') ? tempColor(suhu) : '#ccc'
 
   const pillCls =
-    status === 'Baik'   ? 'pill pill-b' :
-    status === 'Sedang' ? 'pill pill-s' :
-    status === 'Buruk'  ? 'pill pill-u' : 'pill pill-loading'
+    status === 'CO₂ & PM2.5 - Baik'  ? 'pill pill-b' :
+
+    status === 'CO₂ - Sedang' ? 'pill pill-s' :
+    status === 'PM2.5 - Sedang' ? 'pill pill-s' :
+    status === 'CO₂ & PM2.5 - Sedang' ? 'pill pill-s' :
+    
+    status === 'CO₂ - Buruk'  ? 'pill pill-u' :
+    status === 'PM2.5 - Buruk'  ? 'pill pill-u' :
+    status === 'CO₂ & PM2.5 - Buruk'  ? 'pill pill-u' : 'pill pill-loading'
 
   function handleInfo(e) {
     e.stopPropagation()
@@ -45,7 +51,7 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
       if (co2Series.length === 0) return
       
       const { pred, dir } = trendPredict(co2Series)
-      const predStatus = pred > 1000 ? 'Buruk' : pred > 700 ? 'Sedang' : 'Baik'
+      const predStatus = pred > 1000 ? 'Buruk' : pred > 400 ? 'Sedang' : 'Baik'
       onInfo({ 
         lokasi, 
         status, 
