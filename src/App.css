@@ -29,24 +29,87 @@
   --pill-u-bg:  #3a1515; --pill-u-fg:  #ef9a9a;
 }
 
-html { 
-  font-size: 16px; 
-  overflow-y: scroll;
+html, body {
+  height: 100dvh;       /* Paksa tinggi web pas dengan layar hp/monitor */
+  weight: 100%;
+  overflow: hidden;     /* MEMATIKAN SCROLL GLOBAL (vertikal & horizontal) */
 }
 
 /* ── App shell ───────────────────────────────────────────────────────────── */
 .app {
   font-family: var(--font);
   background: var(--bg);
-  min-height: 100dvh;
+  height: 100dvh;       /* Ganti min-height menjadi height */
   color: var(--text);
   transition: background .25s, color .25s;
+  overflow: hidden;     /* Proteksi tambahan agar tidak jebol */
 }
 
-.app-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px 20px 120px;
+/* ── Topbar full width ───────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Two-column layout ───────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100dvh - 65px); /* Tinggi layar dikurangi tinggi topbar */
+  align-items: stretch;        /* Biar kolom kiri & kanan tingginya pas */
+}
+
+/* Kolom kiri: maskot menempel ke bawah */
+.mascot-col {
+  position: sticky;
+  top: 100px;                         /* tinggi topbar */
+  height: calc(100dvh - 75px);
+  display: flex;
+  align-items: flex-end;             /* maskot di bawah */
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.mascot-col img {
+  width: 100vw; 
+  max-width: none;   
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0px;
+}
+
+/* Kolom kanan: scroll normal */
+.content-col {
+  padding: 24px 32px 80px 16px;
+  overflow-y: overlay;
+  scrollbar-gutter: stable;
+
+  /* Sembunyikan scrollbar untuk Firefox */
+  scrollbar-width: none; 
+  /* Sembunyikan scrollbar untuk IE/Edge kuno */
+  -ms-overflow-style: none;
+}
+
+/* Mobile: sembunyikan kolom maskot */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .mascot-col {
+    display: none;
+  }
+  .content-col {
+    padding: 16px 16px 80px;
+  }
 }
 
 /* ── Topbar ──────────────────────────────────────────────────────────────── */
@@ -54,7 +117,6 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
 }
 .logo {
   font-size: 24px;
@@ -118,7 +180,7 @@ html {
   background: var(--surface);
   border: 0.5px solid var(--border);
   border-radius: 14px;
-  overflow: hidden;
+  overflow: auto;
   transition: box-shadow .15s;
   z-index: 51;
 }
@@ -261,74 +323,14 @@ html {
 .loading-full { padding: 24px;   font-size: 14px; color: var(--text2); text-align: center; }
 .empty        { padding: 24px;   font-size: 14px; color: var(--text2); text-align: center; }
 
-/* ── Maskot float kiri bawah ─────────────────────────────────────────────── */
-.mascot-float {
-  position: fixed;
-  bottom: -100px; /* Sesuaikan angka ini untuk posisi vertikal */
-  left: -120px;   /* Sesuaikan angka ini untuk posisi horizontal */
-   display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 50;
-  pointer-events: all;
-  
-  /* Animasi masuk */
-  animation: mascotSlideIn 0.4s ease-out;
-}
-
-@keyframes mascotSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes mascotSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-.mascot-float img {
-  width: 700px;  /* Dikecilkan dari 1000px */
-  height: 700px;
-  object-fit: contain;
-  pointer-events: none;
-}
-.mascot-lbl { 
-  font-size: 11px; 
-  color: var(--text); 
-  font-weight: 600;
-  margin-top: -30px; /* Naikkan lebih tinggi */
-  z-index: 51;
-  position: relative;
-  background: var(--surface);
-  padding: 5px 12px;
-  border-radius: 14px;
-  border: 0.5px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  pointer-events: none;
-}
-.dk .mascot-lbl {
-  background: var(--surface);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-/* HIDE MASKOT FLOAT di MOBILE */
-@media (max-width: 768px) {
-  .mascot-float {
-    display: none !important;
-  }
-}
-
 /* ── VN Popup overlay ────────────────────────────────────────────────────── */
+/*
+  Z-index layer stack saat popup aktif:
+    100  vn-overlay     — gradien hitam (backdrop)
+    150  vn-mascot-fixed — maskot, sama posisi seperti mascot-float
+    200  vn-row / vn-box — bubble chat (paling depan)
+*/
+
 .vn-overlay {
   position: fixed;
   inset: 0;
@@ -337,41 +339,74 @@ html {
   justify-content: flex-end;
   align-items: center;
   padding: 0 20px 40px;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-  z-index: 200;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.75) 0%,
+    rgba(0,0,0,0.30) 60%,
+    transparent 100%
+  );
+  z-index: 60;           /* layer 1: backdrop */
+  cursor: pointer;
+  animation: vnSlide .22s ease;
+}
+
+@keyframes vnSlide {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.vn-mascot-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: calc(100dvh - 65px);  /* sama dengan mascot-col */
+  z-index: 150;
+  pointer-events: all;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vn-mascot-fixed img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Hide maskot VN di mobile */
+@media (max-width: 768px) {
+  .vn-mascot-fixed { display: none !important; }
+}
+
+/* ── Bubble chat — posisi bawah tengah, di layer paling depan ── */
+.vn-backdrop {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.75) 0%,
+    rgba(0,0,0,0.30) 60%,
+    transparent 100%
+  );
+  z-index: 90;   /* di belakang maskot */
   cursor: pointer;
   animation: vnSlide .22s ease;
 }
 
 .vn-row {
-  position: relative; /* PENTING: untuk positioning absolute di dalam */
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
   display: flex;
-  align-items: flex-end;
   justify-content: center;
-  max-width: 780px;
-  width: 100%;
-  height: 280px; /* Berikan tinggi container */
-  margin: 0 auto;
-}
-
-.vn-mascot-wrap { 
-  position: absolute; /* UBAH: jadi absolute */
-  bottom: -180px;
-  left: -350px; /* Posisi maskot agak kiri dari tengah */
-  z-index: 201;
-}
-.vn-mascot-wrap img {
-  width: 1000px;
-  height: 1000px;
-  object-fit: contain;
+  padding: 0 20px;
+  z-index: 200;  /* di depan maskot */
 }
 
 .vn-box {
-  position: absolute; /* UBAH: jadi absolute */
-  bottom: -10px; /* Naik sedikit dari bawah */
-  left: 180px; /* Geser ke kanan, menumpuk sebagian dengan maskot */
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
   background: rgba(255,255,255,0.98);
   border: 0.5px solid rgba(0,0,0,0.12);
   border-radius: 18px;
@@ -380,29 +415,13 @@ html {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  z-index: 202; /* Di depan maskot */
+  z-index: 200;
 }
+
 .dk .vn-box {
   background: rgba(42,42,42,0.98);
   border-color: rgba(255,255,255,0.15);
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-
-/* Tambahkan tail/ekor bubble chat (opsional) */
-.vn-box::before {
-  content: '';
-  position: absolute;
-  bottom: 20px;
-  left: -10px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 15px 15px 0;
-  border-color: transparent rgba(255,255,255,0.98) transparent transparent;
-  filter: drop-shadow(-2px 2px 3px rgba(0,0,0,0.1));
-}
-.dk .vn-box::before {
-  border-color: transparent rgba(42,42,42,0.98) transparent transparent;
 }
 
 .vn-name {
@@ -413,9 +432,7 @@ html {
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
-.dk .vn-name {
-  color: #5dcaa5;
-}
+.dk .vn-name { color: #5dcaa5; }
 
 .vn-text {
   font-size: 14px;
@@ -423,18 +440,10 @@ html {
   color: #1a1a1a;
   margin-bottom: 10px;
 }
-.dk .vn-text { 
-  color: #e8e8e8;
-}
+.dk .vn-text { color: #e8e8e8; }
 
-.vn-text strong {
-  color: #0a0a0a;
-  font-weight: 600;
-}
-.dk .vn-text strong {
-  color: #ffffff;
-  font-weight: 600;
-}
+.vn-text strong { color: #0a0a0a; font-weight: 600; }
+.dk .vn-text strong { color: #ffffff; font-weight: 600; }
 
 .vn-pred {
   font-size: 14px;
@@ -442,18 +451,10 @@ html {
   color: #2a2a2a;
   font-weight: 500;
 }
-.dk .vn-pred { 
-  color: #d0d0d0;
-}
+.dk .vn-pred { color: #d0d0d0; }
 
-.vn-pred strong {
-  color: #0a0a0a;
-  font-weight: 700;
-}
-.dk .vn-pred strong {
-  color: #ffffff;
-  font-weight: 700;
-}
+.vn-pred strong { color: #0a0a0a; font-weight: 700; }
+.dk .vn-pred strong { color: #ffffff; font-weight: 700; }
 
 .vn-tap {
   font-size: 11px;
@@ -464,80 +465,21 @@ html {
   border-top: 0.5px solid var(--border);
   font-style: italic;
 }
-.dk .vn-tap {
-  color: #999;
-}
+.dk .vn-tap { color: #999; }
 
-/* Responsive untuk mobile */
+/* ── Responsive mobile untuk popup ─────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Hide maskot di popup mobile */
-  .vn-mascot-wrap {
-    display: none !important;
-  }
-  
-  /* Hide nama lokasi di mobile */
-  .vn-name {
-    display: none !important;
-  }
-  
-  /* Adjust layout popup tanpa maskot */
-  .vn-row {
-    height: auto;
-    padding: 0;
-  }
-  
-  .vn-box {
-    position: relative; /* Jadi normal flow, bukan absolute */
-    left: auto;
-    bottom: auto;
-    max-width: 100%;
-    margin: 0;
-  }
-  
-  /* Hide tail bubble karena tidak ada maskot */
-  .vn-box::before {
-    display: none;
-  }
-  
-  /* Adjust padding dan font untuk mobile */
-  .vn-box {
-    padding: 16px 18px;
-    border-radius: 16px;
-  }
-  
-  .vn-text {
-    font-size: 13px;
-    line-height: 1.65;
-  }
-  
-  .vn-pred {
-    font-size: 13px;
-    line-height: 1.65;
-  }
-  
-  .vn-tap {
-    font-size: 10px;
-    margin-top: 12px;
-    padding-top: 10px;
-  }
-  
-  /* Adjust overlay padding untuk mobile */
-  .vn-overlay {
-    padding: 0 16px 30px;
-  }
+  .vn-name    { display: none !important; }
+  .vn-row     { padding: 0; }
+  .vn-box     { max-width: 100%; padding: 16px 18px; border-radius: 16px; }
+  .vn-text    { font-size: 13px; line-height: 1.65; }
+  .vn-pred    { font-size: 13px; line-height: 1.65; }
+  .vn-tap     { font-size: 10px; margin-top: 12px; padding-top: 10px; }
+  .vn-overlay { padding: 0 16px 30px; }
 }
 
-/* Extra small devices (portrait phones) */
 @media (max-width: 480px) {
-  .vn-box {
-    padding: 14px 16px;
-  }
-  
-  .vn-text {
-    font-size: 12px;
-  }
-  
-  .vn-pred {
-    font-size: 12px;
-  }
+  .vn-box  { padding: 14px 16px; }
+  .vn-text { font-size: 12px; }
+  .vn-pred { font-size: 12px; }
 }
