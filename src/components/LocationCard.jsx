@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useLocationData, useLatestData } from '../hooks/useAirQuality'
 import { calcStatus, tempColor, trendPredict } from '../lib/utils'
 import AQChart from './AQChart'
@@ -7,13 +7,14 @@ const METRIKS = ['co2', 'pm1', 'pm25', 'pm10']
 const METRIK_LABEL = { co2: 'CO₂', pm1: 'PM1', pm25: 'PM2.5', pm10: 'PM10' }
 
 export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark }) {
-  // PERBAIKAN: Selalu ambil latest data untuk preview
+  // Selalu ambil latest data untuk preview
   const { latest: previewLatest, loading: previewLoading } = useLatestData(lokasi)
   
   // Data lengkap hanya diambil saat card dibuka
   const { rows, latest: fullLatest, loading: fullLoading } = useLocationData(isOpen ? lokasi : null)
   
   const [metrik, setMetrik] = useState('co2')
+  const pendingInfo = useRef(false)
 
   // Gunakan data preview untuk header, data full untuk expand
   const latest = isOpen && rows.length > 0 ? fullLatest : previewLatest
@@ -42,41 +43,41 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
     status === 'PM2.5 - Buruk'  ? 'pill pill-u' :
     status === 'CO₂ & PM2.5 - Buruk'  ? 'pill pill-u' : 'pill pill-loading'
 
-  function handleInfo(e) {
-    e.stopPropagation()
-    if (!rows.length) return
-    
+  function showPopup() {
     try {
       const co2Series = rows.map(r => r.co2).filter(v => typeof v === 'number')
       if (co2Series.length === 0) return
-      
       const { pred, dir } = trendPredict(co2Series)
       const predStatus = pred > 1000 ? 'Buruk' : pred > 400 ? 'Sedang' : 'Baik'
-      onInfo({ 
-        lokasi, 
-        status, 
-        suhu, 
-        kelembapan, 
-        co2, 
-        pm1, 
-        pm25, 
-        pm10, 
-        predCO2: pred, 
-        predStatus, 
-        dir 
-      })
+      onInfo({ lokasi, status, suhu, kelembapan, co2, pm1, pm25, pm10, predCO2: pred, predStatus, dir })
     } catch (error) {
       console.error('Error calculating prediction:', error)
     }
+  }
+
+  // Kalau card belum dibuka saat tombol i diklik, tunggu rows selesai dimuat lalu tampilkan popup
+  useEffect(() => {
+    if (pendingInfo.current && rows.length > 0) {
+      pendingInfo.current = false
+      showPopup()
+    }
+  }, [rows])
+
+  function handleInfo(e) {
+    e.stopPropagation()
+    if (!isOpen || !rows.length) {
+      // Tandai popup pending, lalu buka card agar rows mulai di-fetch
+      pendingInfo.current = true
+      if (!isOpen) onToggle()
+      return
+    }
+    showPopup()
   }
 
   return (
     <div className={`card ${isOpen ? 'card-open' : ''}`}>
       {/* ── Header ── */}
       <div className="card-header" onClick={onToggle}>
-        <div className="card-thumb">
-          <span className="thumb-lbl">Foto Area</span>
-        </div>
         <div className="card-meta">
           <span className="card-title">{lokasi}</span>
           {previewLoading ? (

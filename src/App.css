@@ -31,7 +31,6 @@
 
 html, body {
   height: 100dvh;       /* Paksa tinggi web pas dengan layar hp/monitor */
-  weight: 100%;
   overflow: hidden;     /* MEMATIKAN SCROLL GLOBAL (vertikal & horizontal) */
 }
 

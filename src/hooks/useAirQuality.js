@@ -14,15 +14,14 @@ export function useLocations() {
       return
     }
     supabase
-      .from('air_quality')
-      .select('lokasi')
+      .rpc('get_unique_locations')  // ← ganti dari .from().select()
       .then(({ data, error }) => {
-        if (error) { 
+        if (error) {
           console.error('Error fetching locations:', error)
           setLocations(MOCK_LOCATIONS)
         } else {
-          const unique = [...new Set((data ?? []).map(r => r.lokasi))].filter(Boolean).sort()
-          setLocations(unique.length ? unique : MOCK_LOCATIONS)
+          const locs = (data ?? []).map(r => r.lokasi).filter(Boolean)
+          setLocations(locs.length ? locs : MOCK_LOCATIONS)
         }
         setLoading(false)
       })
@@ -97,7 +96,7 @@ export function useLatestData(lokasi) {
   return { latest, loading }
 }
 
-// Ambil 24 data terbaru untuk satu lokasi + subscribe realtime
+// Ambil data untuk satu lokasi + subscribe realtime
 export function useLocationData(lokasi) {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
