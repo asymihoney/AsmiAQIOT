@@ -9,10 +9,10 @@ const METRIK_LABEL = { co2: 'CO₂', pm1: 'PM1', pm25: 'PM2.5', pm10: 'PM10' }
 export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark }) {
   // Selalu ambil latest data untuk preview
   const { latest: previewLatest, loading: previewLoading } = useLatestData(lokasi)
-  
+
   // Data lengkap hanya diambil saat card dibuka
   const { rows, latest: fullLatest, loading: fullLoading } = useLocationData(isOpen ? lokasi : null)
-  
+
   const [metrik, setMetrik] = useState('co2')
   const pendingInfo = useRef(false)
 
@@ -26,22 +26,22 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
   const pm1 = latest?.pm1 ?? '--'
   const pm25 = latest?.pm25 ?? '--'
   const pm10 = latest?.pm10 ?? '--'
-  
-  const status = (typeof co2 === 'number' && typeof pm25 === 'number') 
-    ? calcStatus(co2, pm25) 
+
+  const status = (typeof co2 === 'number' && typeof pm25 === 'number')
+    ? calcStatus(co2, pm25)
     : '...'
   const tc = (typeof suhu === 'number') ? tempColor(suhu) : '#ccc'
 
   const pillCls =
-    status === 'CO₂ & PM2.5 - Baik'  ? 'pill pill-b' :
+    status === 'CO₂ & PM2.5 - Baik' ? 'pill pill-b' :
 
-    status === 'CO₂ - Sedang' ? 'pill pill-s' :
-    status === 'PM2.5 - Sedang' ? 'pill pill-s' :
-    status === 'CO₂ & PM2.5 - Sedang' ? 'pill pill-s' :
-    
-    status === 'CO₂ - Buruk'  ? 'pill pill-u' :
-    status === 'PM2.5 - Buruk'  ? 'pill pill-u' :
-    status === 'CO₂ & PM2.5 - Buruk'  ? 'pill pill-u' : 'pill pill-loading'
+      status === 'CO₂ - Sedang' ? 'pill pill-s' :
+        status === 'PM2.5 - Sedang' ? 'pill pill-s' :
+          status === 'CO₂ & PM2.5 - Sedang' ? 'pill pill-s' :
+
+            status === 'CO₂ - Buruk' ? 'pill pill-u' :
+              status === 'PM2.5 - Buruk' ? 'pill pill-u' :
+                status === 'CO₂ & PM2.5 - Buruk' ? 'pill pill-u' : 'pill pill-loading'
 
   function showPopup() {
     try {
@@ -84,6 +84,15 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
             <span className="pill pill-loading">...</span>
           ) : (
             <span className={pillCls}>{status}</span>
+          )}
+          {!previewLoading && latest?.created_at && (
+            <span style={{ fontSize: '11px', color: 'var(--text2)' }}>
+              Diperbarui:{' '}
+              {new Date(latest.created_at).toLocaleString('id-ID', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+              })}
+            </span>
           )}
         </div>
         <button className="ibtn" onClick={handleInfo} title="Info & Prediksi" aria-label="Info">

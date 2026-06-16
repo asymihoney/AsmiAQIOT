@@ -6,33 +6,77 @@
 //
 // Selama file belum ada, tampil SVG placeholder otomatis.
 
-import maskotIdle   from '../assets/maskot-idle.png'
-import maskotBaik   from '../assets/maskot-baik.png'
+import { useState } from 'react'
+import maskotIdle from '../assets/maskot-idle.png'
+import maskotBaik from '../assets/maskot-baik.png'
 import maskotSedang from '../assets/maskot-sedang.png'
-import maskotBuruk  from '../assets/maskot-buruk.png'
+import maskotBuruk from '../assets/maskot-buruk.png'
+import maskotPats from '../assets/maskot-pats.png'
 
 const IMG = {
-  idle:   maskotIdle,
-  'CO₂ & PM2.5 - Baik':   maskotBaik,
+  idle: maskotIdle,
+  'CO₂ & PM2.5 - Baik': maskotBaik,
   'CO₂ & PM2.5 - Sedang': maskotSedang,
   'CO₂ - Sedang': maskotSedang,
   'PM2.5 - Sedang': maskotSedang,
-  'CO₂ & PM2.5 - Buruk':  maskotBuruk,
-  'CO₂ - Buruk':  maskotBuruk,
-  'PM2.5 - Buruk':  maskotBuruk,
+  'CO₂ & PM2.5 - Buruk': maskotBuruk,
+  'CO₂ - Buruk': maskotBuruk,
+  'PM2.5 - Buruk': maskotBuruk,
 }
 
-export default function Maskot({ status = 'idle', size = 2000, ...props }) {
-  const src = IMG[status] ?? IMG.idle
+export default function Maskot({ status = 'idle', size, ...props }) {
+  const [isPats, setIsPats] = useState(false)
+  const [clickCount, setClickCount] = useState(0)
+
+  const src = isPats ? maskotPats : (IMG[status] ?? IMG.idle)
+
+  function handleHeadClick() {
+    const next = clickCount + 1
+    setClickCount(next)
+    if (next >= 5) {
+      setIsPats(true)
+      setClickCount(0)
+      // Reset kembali ke normal setelah 2 detik
+      setTimeout(() => setIsPats(false), 2000)
+    }
+  }
 
   return (
-    <img
-      src={src}
-      alt={`Maskot — ${status}`}
-      width={size}
-      height={size}
-      style={{ objectFit: 'contain', display: 'block' }}
-      {...props}
-    />
+    <div style={{
+      position: 'relative',
+      width: size,
+      display: 'flex',          
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <img
+        src={src}
+        alt={`Maskot — ${status}`}
+        style={{
+          width: '200%',
+          height: 'auto',
+          objectFit: 'contain',
+          display: 'block'
+        }}
+        {...props}
+      />
+
+      {/* Area kepala — nanti jadikan komentar kalau sudah pas posisinya */}
+      <div
+        onClick={handleHeadClick}
+        style={{
+          position: 'absolute',
+          top: '10%',
+          left: '35%',
+          width: '25%',
+          height: '20%',
+          // backgroundColor: 'rgba(255, 0, 0, 0.3)',
+          // border: '2px solid red',
+          // borderRadius: '50%',
+          cursor: 'pointer',
+          pointerEvents: 'all',
+        }}
+      />
+    </div >
   )
 }

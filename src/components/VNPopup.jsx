@@ -1,7 +1,7 @@
 import Maskot from './Maskot'
 import { STATUS_COLOR } from '../lib/utils'
 
-export default function VNPopup({ data, onClose }) {
+export default function VNPopup({ data, onClose, showMaskot }) {
   if (!data) return null
   const { lokasi, status, suhu, kelembapan, co2, pm1, pm25, pm10, predCO2, predStatus, dir } = data
   const sc = STATUS_COLOR[status] ?? '#4caf50'
@@ -15,7 +15,7 @@ return (
     {/* Layer 2: bubble chat — di depan maskot */}
     <div className="vn-row" onClick={e => e.stopPropagation()}>
       <div className="vn-box" onClick={onClose}>
-          <div className="vn-name">Anila</div>
+          {showMaskot && <div className="vn-name">Anila</div>}
           <p className="vn-text">
             Kualitas udara pada elemen{' '}
             <span style={{ color: sc, fontWeight: 600 }}>{status}</span> untuk lokasi{' '}
