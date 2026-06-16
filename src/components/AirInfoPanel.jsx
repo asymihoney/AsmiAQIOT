@@ -5,7 +5,7 @@ export default function AirInfoPanel({ isDark, isModal }) {
       {/* ── Header ── */}
       <div className="aip-header">
         <span className="aip-title">Panduan Kualitas Udara</span>
-        <span className="aip-sub">Parameter yang dipantau di kampus Gunadarma</span>
+        <span className="aip-sub">Berikut adalah informasi tentang parameter kualitas udara yang dipantau dan standar yang digunakan.</span>
       </div>
 
       {/* ── Parameter ── */}

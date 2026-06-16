@@ -48,7 +48,7 @@ export default function App() {
         <span className="logo">asmiaqiot</span>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button className="dk-btn info-panel-btn" onClick={() => setShowInfoPanel(p => !p)}>
-            ? Info
+            Info
           </button>
           <button className="dk-btn" onClick={() => setIsDark(d => !d)}>
             {isDark ? '☽ Dark' : '☀ Light'}

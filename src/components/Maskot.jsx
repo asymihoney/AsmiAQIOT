@@ -6,7 +6,7 @@
 //
 // Selama file belum ada, tampil SVG placeholder otomatis.
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import maskotIdle from '../assets/maskot-idle.png'
 import maskotBaik from '../assets/maskot-baik.png'
 import maskotSedang from '../assets/maskot-sedang.png'
@@ -25,6 +25,7 @@ const IMG = {
 }
 
 export default function Maskot({ status = 'idle', size, ...props }) {
+  const timerRef = useRef(null)
   const [isPats, setIsPats] = useState(false)
   const [clickCount, setClickCount] = useState(0)
 
@@ -36,8 +37,8 @@ export default function Maskot({ status = 'idle', size, ...props }) {
     if (next >= 5) {
       setIsPats(true)
       setClickCount(0)
-      // Reset kembali ke normal setelah 2 detik
-      setTimeout(() => setIsPats(false), 2000)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => setIsPats(false), 1500)
     }
   }
 
@@ -45,7 +46,7 @@ export default function Maskot({ status = 'idle', size, ...props }) {
     <div style={{
       position: 'relative',
       width: size,
-      display: 'flex',          
+      display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
     }}>
