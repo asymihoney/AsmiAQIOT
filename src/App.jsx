@@ -17,7 +17,7 @@ export default function App() {
 
   useEffect(() => {
     function handleKey(e) {
-      if (e.key === '[') setShowMaskot(prev => !prev)
+      if (e.key === 'o' || e.key === 'O') setShowMaskot(prev => !prev)
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
