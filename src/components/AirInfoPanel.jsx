@@ -101,19 +101,23 @@ export default function AirInfoPanel({ isDark, isModal }) {
           <tbody>
             <tr className="aip-row-baik">
               <td>400–1.000 ppm</td>
-              <td>Normal, kualitas udara baik</td>
+              <td>Baik, kualitas udara normal</td>
             </tr>
             <tr className="aip-row-sedang">
               <td>1.000–2.000 ppm</td>
-              <td>Mulai pengap, kantuk & keluhan umum</td>
+              <td>Sedang, mulai pengap, kantuk & keluhan umum</td>
             </tr>
-            <tr className="aip-row-tsehat">
+            <tr className="aip-row-buruk">
               <td>2.000–5.000 ppm</td>
-              <td>Sakit kepala, lelah, sulit fokus, mual</td>
+              <td>Buruk, sakit kepala, lelah, sulit fokus, mual</td>
             </tr>
-            <tr className="aip-row-bahaya">
+            <tr className="aip-row-berbahaya">
               <td>&gt;5.000 ppm</td>
-              <td>Berbahaya, perlu evakuasi segera</td>
+              <td>Berbahaya, perlu ventilasi/evakuasi segera</td>
+            </tr>
+            <tr className="aip-row-kritis">
+              <td>&gt;40.000 ppm</td>
+              <td>Kritis, risiko keracunan CO₂ akut</td>
             </tr>
           </tbody>
         </table>

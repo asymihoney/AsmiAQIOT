@@ -13,15 +13,17 @@ import maskotSedang from '../assets/maskot-sedang.png'
 import maskotBuruk from '../assets/maskot-buruk.png'
 import maskotPats from '../assets/maskot-pats.png'
 
-const IMG = {
-  idle: maskotIdle,
-  'CO₂ & PM2.5 - Baik': maskotBaik,
-  'CO₂ & PM2.5 - Sedang': maskotSedang,
-  'CO₂ - Sedang': maskotSedang,
-  'PM2.5 - Sedang': maskotSedang,
-  'CO₂ & PM2.5 - Buruk': maskotBuruk,
-  'CO₂ - Buruk': maskotBuruk,
-  'PM2.5 - Buruk': maskotBuruk,
+function pickMaskotImg(status) {
+  if (!status || status === 'idle' || status === '...') return maskotIdle
+  if (status.includes('Baik')) return maskotBaik
+  if (status.includes('Sedang')) return maskotSedang
+  if (
+    status.includes('Buruk') ||
+    status.includes('Tidak Sehat') ||
+    status.includes('Berbahaya') ||
+    status.includes('Kritis')
+  ) return maskotBuruk
+  return maskotIdle   // fallback aman kalau ada status tak dikenal
 }
 
 export default function Maskot({ status = 'idle', size, ...props }) {
@@ -29,7 +31,7 @@ export default function Maskot({ status = 'idle', size, ...props }) {
   const [isPats, setIsPats] = useState(false)
   const [clickCount, setClickCount] = useState(0)
 
-  const src = isPats ? maskotPats : (IMG[status] ?? IMG.idle)
+  const src = isPats ? maskotPats : pickMaskotImg(status)
 
   function handleHeadClick() {
     const next = clickCount + 1

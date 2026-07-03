@@ -22,6 +22,14 @@
   --pill-s-fg: #e65100;
   --pill-u-bg: #ffebee;
   --pill-u-fg: #c62828;
+  --pill-ts-bg: #fff3e6;
+  --pill-ts-fg: #c2410c;
+  --pill-sts-bg: #fde8e8;
+  --pill-sts-fg: #b91c1c;
+  --pill-bahaya-bg: #fbe2e2;
+  --pill-bahaya-fg: #7f1d1d;
+  --pill-kritis-bg: #ece5fb;
+  --pill-kritis-fg: #4c1d95;
   --font: 'DM Sans', system-ui, sans-serif;
 }
 
@@ -40,6 +48,14 @@
   --pill-s-fg: #ffb74d;
   --pill-u-bg: #3a1515;
   --pill-u-fg: #ef9a9a;
+  --pill-ts-bg: #4a2a10;
+  --pill-ts-fg: #fb923c;
+  --pill-sts-bg: #4a1515;
+  --pill-sts-fg: #f87171;
+  --pill-bahaya-bg: #451a1a;
+  --pill-bahaya-fg: #fca5a5;
+  --pill-kritis-bg: #2e1a4d;
+  --pill-kritis-fg: #c4b5fd;
 }
 
 html,
@@ -304,6 +320,26 @@ body {
 .pill-u {
   background: var(--pill-u-bg);
   color: var(--pill-u-fg);
+}
+
+.pill-ts {
+  background: var(--pill-ts-bg);
+  color: var(--pill-ts-fg);
+}
+
+.pill-sts {
+  background: var(--pill-sts-bg);
+  color: var(--pill-sts-fg);
+}
+
+.pill-bahaya {
+  background: var(--pill-bahaya-bg);
+  color: var(--pill-bahaya-fg);
+}
+
+.pill-kritis {
+  background: var(--pill-kritis-bg);
+  color: var(--pill-kritis-fg);
 }
 
 .pill-loading {
@@ -849,6 +885,18 @@ body {
 }
 
 .aip-row-bahaya td:first-child {
+  font-weight: 500;
+}
+
+.aip-row-buruk td:first-child {
+  font-weight: 500;
+}
+
+.aip-row-berbahaya td:first-child {
+  font-weight: 500;
+}
+
+.aip-row-kritis td:first-child {
   font-weight: 500;
 }
 

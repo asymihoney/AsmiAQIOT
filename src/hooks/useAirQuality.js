@@ -101,7 +101,7 @@ export function useLocationData(lokasi) {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const fetch = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     if (!lokasi) return
     if (!supabase) {
       setRows(buildMockRows(lokasi))
@@ -115,7 +115,7 @@ export function useLocationData(lokasi) {
       .select('*')
       .eq('lokasi', lokasi)
       .order('created_at', { ascending: false })
-      .limit(1000)
+      .limit(200)
     
     if (error) {
       console.error('Error fetching data:', error)
@@ -129,7 +129,7 @@ export function useLocationData(lokasi) {
   useEffect(() => {
     if (!lokasi) return
     
-    fetch()
+    fetchData()
     
     if (!supabase) return
 

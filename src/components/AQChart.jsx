@@ -8,18 +8,21 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, 
 
 const THRESHOLDS_CONFIG = {
   co2: {
-    baik: 400, sedang: 1000, buruk: 2000,
-    labels: ['Baik', 'Sedang', 'Buruk'], colors: ['#22c55e', '#f59e0b', '#ef4444']
+    referensi: 400, baik: 1000, sedang: 2000, buruk: 5000, bahaya: 40000,
+    labels: ['', 'Baik', 'Sedang', 'Buruk', 'Berbahaya'],
+    colors: ['#4b5563', '#22c55e', '#f59e0b', '#ef4444', '#991b1b']
   },
   pm25: {
     baik: 15.5, sedang: 55.4, ts: 150.4, buruk: 250.4,
-    labels: ['Baik', 'Sedang', 'Tidak Sehat', 'Buruk'], colors: ['#22c55e', '#f59e0b', '#f97316', '#ef4444']
+    labels: ['Baik', 'Sedang', 'Tidak Sehat', 'Sangat Tidak Sehat'], // sebelumnya 'Buruk'
+    colors: ['#22c55e', '#f59e0b', '#f97316', '#ef4444']
   },
   pm10: {
     baik: 50, sedang: 150, ts: 350, buruk: 420,
-    labels: ['Baik', 'Sedang', 'Tidak Sehat', 'Buruk'], colors: ['#22c55e', '#f59e0b', '#f97316', '#ef4444']
+    labels: ['Baik', 'Sedang', 'Tidak Sehat', 'Sangat Tidak Sehat'], // sebelumnya 'Buruk'
+    colors: ['#22c55e', '#f59e0b', '#f97316', '#ef4444']
   },
-  pm1: { value: null }
+  pm1: { }
 }
 
 const COLORS = {
@@ -66,9 +69,9 @@ export default function AQChart({ rows, metrik, isDark }) {
           borderWidth: 1.5,
           borderDash: [4, 4],
           label: {
-            display: true,
+            display: !!conf.labels[index],   // ganti dari: display: true
             content: conf.labels[index],
-            position: index % 2 === 0 ? 'start' : 'end', // Selang-seling agar tidak tabrakan
+            position: index % 2 === 0 ? 'start' : 'end',
             backgroundColor: 'rgba(0,0,0,0.6)',
             font: { size: 9 }
           }

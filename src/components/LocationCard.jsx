@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useLocationData, useLatestData } from '../hooks/useAirQuality'
-import { calcStatus, tempColor, trendPredict } from '../lib/utils'
+import { calcStatus, tempColor } from '../lib/utils'
 import AQChart from './AQChart'
 
 const METRIKS = ['co2', 'pm1', 'pm25', 'pm10']
@@ -18,7 +18,6 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
 
   // Gunakan data preview untuk header, data full untuk expand
   const latest = isOpen && rows.length > 0 ? fullLatest : previewLatest
-  const loading = isOpen ? fullLoading : previewLoading
 
   const suhu = latest?.suhu ?? '--'
   const kelembapan = latest?.kelembapan ?? '--'
@@ -33,25 +32,21 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
   const tc = (typeof suhu === 'number') ? tempColor(suhu) : '#ccc'
 
   const pillCls =
-    status === 'CO₂ & PM2.5 - Baik' ? 'pill pill-b' :
-
-      status === 'CO₂ - Sedang' ? 'pill pill-s' :
-        status === 'PM2.5 - Sedang' ? 'pill pill-s' :
-          status === 'CO₂ & PM2.5 - Sedang' ? 'pill pill-s' :
-
-            status === 'CO₂ - Buruk' ? 'pill pill-u' :
-              status === 'PM2.5 - Buruk' ? 'pill pill-u' :
-                status === 'CO₂ & PM2.5 - Buruk' ? 'pill pill-u' : 'pill pill-loading'
+    status.includes('Kritis') ? 'pill pill-kritis' :
+      status.includes('Berbahaya') ? 'pill pill-bahaya' :
+        status.includes('Buruk') ? 'pill pill-u' :
+          status.includes('Sangat Tidak Sehat') ? 'pill pill-sts' :
+            status.includes('Tidak Sehat') ? 'pill pill-ts' :
+              status.includes('Sedang') ? 'pill pill-s' :
+                status.includes('Baik') ? 'pill pill-b' :
+                  'pill pill-loading'
 
   function showPopup() {
     try {
-      const co2Series = rows.map(r => r.co2).filter(v => typeof v === 'number')
-      if (co2Series.length === 0) return
-      const { pred, dir } = trendPredict(co2Series)
-      const predStatus = pred > 1000 ? 'Buruk' : pred > 400 ? 'Sedang' : 'Baik'
-      onInfo({ lokasi, status, suhu, kelembapan, co2, pm1, pm25, pm10, predCO2: pred, predStatus, dir })
-    } catch (error) {
-      console.error('Error calculating prediction:', error)
+      onInfo({ lokasi, status, suhu, kelembapan, co2, pm1, pm25, pm10 })
+    }
+    catch (err) {
+      console.error('Error showing popup:', err)
     }
   }
 
