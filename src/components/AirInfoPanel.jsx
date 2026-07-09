@@ -113,11 +113,11 @@ export default function AirInfoPanel({ isDark, isModal }) {
             </tr>
             <tr className="aip-row-berbahaya">
               <td>&gt;5.000 ppm</td>
-              <td>Berbahaya, perlu ventilasi/evakuasi segera</td>
+              <td>Berbahaya, keracunan atau kekurangan oksigen dapat terjadi.</td>
             </tr>
             <tr className="aip-row-kritis">
               <td>&gt;40.000 ppm</td>
-              <td>Kritis, risiko keracunan CO₂ akut</td>
+              <td>Kritis, langsung berbahaya karena kekurangan oksigen</td>
             </tr>
           </tbody>
         </table>
