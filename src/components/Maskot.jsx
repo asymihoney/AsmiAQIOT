@@ -15,17 +15,20 @@ import maskotPats from '../assets/maskot-pats.png'
 
 function pickMaskotImg(status) {
   if (!status || status === 'idle' || status === '...') return maskotIdle
-  if (status.includes('Baik')) return maskotBaik
-  if (status.includes('Sedang')) return maskotSedang
+
   if (
-    status.includes('Buruk') ||
+    status.includes('Melampaui Baku Mutu') ||
     status.includes('Tidak Sehat') ||
     status.includes('Berbahaya') ||
     status.includes('Kritis')
   ) return maskotBuruk
+
+  if (status.includes('Sedang')) return maskotSedang
+
+  if (status.includes('Baik')) return maskotBaik
+
   return maskotIdle   // fallback aman kalau ada status tak dikenal
 }
-
 export default function Maskot({ status = 'idle', size, ...props }) {
   const timerRef = useRef(null)
   const [isPats, setIsPats] = useState(false)

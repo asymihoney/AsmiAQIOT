@@ -1,13 +1,9 @@
 // Rank severity masing-masing polutan (index makin besar = makin parah)
-export const CO2_RANK = ['Baik', 'Sedang', 'Buruk', 'Berbahaya', 'Kritis']
+export const CO2_RANK = ['Memenuhi Baku Mutu', 'Melampaui Baku Mutu']
 export const PM25_RANK = ['Baik', 'Sedang', 'Tidak Sehat', 'Sangat Tidak Sehat', 'Berbahaya']
 
 function co2Level(co2) {
-  if (co2 > 40000) return 'Kritis'
-  if (co2 > 5000) return 'Berbahaya'
-  if (co2 > 2000) return 'Buruk'
-  if (co2 > 1000) return 'Sedang'
-  return 'Baik'
+  return co2 > 1000 ? 'Melampaui Baku Mutu' : 'Memenuhi Baku Mutu'
 }
 
 function pm25Level(pm25) {
@@ -21,19 +17,13 @@ function pm25Level(pm25) {
 export function calcStatus(co2, pm25) {
   const c = co2Level(co2)
   const p = pm25Level(pm25)
+  const co2Bad = c === 'Melampaui Baku Mutu'
+  const pmBad = p !== 'Baik'
 
-  const cRank = CO2_RANK.indexOf(c)
-  const pRank = PM25_RANK.indexOf(p)
-
-  if (cRank === pRank) {
-    // rank sama, tapi nama bisa beda (mis. CO2 'Berbahaya' rank3 vs PM 'Berbahaya' rank4 → gasama)
-    // hanya gabungkan kalau NAMA-nya juga sama
-    if (c === p) return `CO₂ & PM2.5 - ${c}`
-    // rank sama tapi nama beda → tampilkan keduanya terpisah
-    return `CO₂ - ${c} & PM2.5 - ${p}`
-  }
-
-  return cRank > pRank ? `CO₂ - ${c}` : `PM2.5 - ${p}`
+  if (!co2Bad && !pmBad) return 'CO₂ & PM2.5 - Baik'
+  if (co2Bad && !pmBad) return 'CO₂ - Melampaui Baku Mutu'
+  if (!co2Bad && pmBad) return `PM2.5 - ${p}`
+  return `CO₂ - Melampaui Baku Mutu & PM2.5 - ${p}`
 }
 
 export { co2Level, pm25Level }
@@ -74,14 +64,14 @@ export const STATUS_COLOR = {
   'CO₂ - Sangat Tidak Sehat': '#dc2626',
   'PM2.5 - Sangat Tidak Sehat': '#dc2626',
 
-  // fallback standalone (dipakai VNPopup via co2Level/pm25Level langsung)
+// fallback standalone (dipakai VNPopup via co2Level/pm25Level langsung)
+  'Memenuhi Baku Mutu': '#4caf50',
+  'Melampaui Baku Mutu': '#ef4444',
   'Baik': '#4caf50',
   'Sedang': '#ff9800',
-  'Buruk': '#f44336',
   'Tidak Sehat': '#f97316',
   'Sangat Tidak Sehat': '#dc2626',
   'Berbahaya': '#991b1b',
-  'Kritis': '#4c1d95',
 }
 
 // ── Mock data (dipakai jika Supabase belum dikonfigurasi) ─────────────────

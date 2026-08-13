@@ -34,9 +34,9 @@ export default function LocationCard({ lokasi, isOpen, onToggle, onInfo, isDark 
   const pillCls =
     status.includes('Kritis') ? 'pill pill-kritis' :
       status.includes('Berbahaya') ? 'pill pill-bahaya' :
-        status.includes('Buruk') ? 'pill pill-u' :
-          status.includes('Sangat Tidak Sehat') ? 'pill pill-sts' :
-            status.includes('Tidak Sehat') ? 'pill pill-ts' :
+        status.includes('Sangat Tidak Sehat') ? 'pill pill-sts' :
+          status.includes('Tidak Sehat') ? 'pill pill-ts' :
+            status.includes('Melampaui Baku Mutu') ? 'pill pill-u' :
               status.includes('Sedang') ? 'pill pill-s' :
                 status.includes('Baik') ? 'pill pill-b' :
                   'pill pill-loading'

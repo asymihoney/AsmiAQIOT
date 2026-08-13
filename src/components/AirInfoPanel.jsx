@@ -42,7 +42,7 @@ export default function AirInfoPanel({ isDark, isModal }) {
       {/* ── Tabel ISPU ── */}
       <div className="aip-section">
         <div className="aip-section-title">Indeks Standar Pencemar Udara (ISPU)</div>
-        <div className="aip-section-sub">Sumber: KLHK — pengukuran rata-rata 24 jam</div>
+        <div className="aip-section-sub">Sumber: Peraturan Menteri LHK No. 14 Tahun 2020</div>
         <table className="aip-table">
           <thead>
             <tr>
@@ -90,39 +90,26 @@ export default function AirInfoPanel({ isDark, isModal }) {
       {/* ── Tabel CO₂ ASHRAE ── */}
       <div className="aip-section">
         <div className="aip-section-title">Standar CO₂ Indoor</div>
-        <div className="aip-section-sub">Sumber: CO2Meter (3 Agustus, 2026)</div>
+        <div className="aip-section-sub">Sumber: Peraturan Menteri Kesehatan No. 48 Tahun 2016</div>
         <table className="aip-table">
           <thead>
             <tr>
               <th>Rentang</th>
-              <th>Kondisi</th>
+              <th>Keterangan</th>
             </tr>
           </thead>
           <tbody>
             <tr className="aip-row-baik">
-              <td>400–1.000 ppm</td>
-              <td>Baik, kualitas udara normal</td>
-            </tr>
-            <tr className="aip-row-sedang">
-              <td>1.000–2.000 ppm</td>
-              <td>Sedang, mulai pengap, kantuk & keluhan umum</td>
+              <td>≤ 1.000 ppm</td>
+              <td>Sesuai batas maksimum</td>
             </tr>
             <tr className="aip-row-buruk">
-              <td>2.000–5.000 ppm</td>
-              <td>Buruk, sakit kepala, lelah, sulit fokus, mual</td>
-            </tr>
-            <tr className="aip-row-berbahaya">
-              <td>&gt;5.000 ppm</td>
-              <td>Berbahaya, keracunan atau kekurangan oksigen dapat terjadi.</td>
-            </tr>
-            <tr className="aip-row-kritis">
-              <td>&gt;40.000 ppm</td>
-              <td>Kritis, langsung berbahaya karena kekurangan oksigen</td>
+              <td>&gt; 1.000 ppm</td>
+              <td>Melebihi batas maksimum</td>
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
   )
 }

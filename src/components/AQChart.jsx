@@ -8,9 +8,9 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, 
 
 const THRESHOLDS_CONFIG = {
   co2: {
-    referensi: 400, baik: 1000, sedang: 2000, buruk: 5000, bahaya: 40000,
-    labels: ['', 'Baik', 'Sedang', 'Buruk', 'Berbahaya'],
-    colors: ['#4b5563', '#22c55e', '#f59e0b', '#ef4444', '#991b1b']
+    baik: 1000,
+    labels: ['Memenuhi Baku Mutu (≤1.000 ppm)', 'Melampaui Baku Mutu (>1.000 ppm)'],
+    colors: ['#22c55e', '#ef4444']
   },
   pm25: {
     baik: 15.5, sedang: 55.4, ts: 150.4, buruk: 250.4,
@@ -22,7 +22,7 @@ const THRESHOLDS_CONFIG = {
     labels: ['Baik', 'Sedang', 'Tidak Sehat', 'Sangat Tidak Sehat'], // sebelumnya 'Buruk'
     colors: ['#22c55e', '#f59e0b', '#f97316', '#ef4444']
   },
-  pm1: { }
+  pm1: {}
 }
 
 const COLORS = {
@@ -117,7 +117,9 @@ export default function AQChart({ rows, metrik, isDark }) {
       },
       y: {
         // Biar chart selalu punya ruang untuk melihat garis threshold
-        suggestedMax: (conf?.sedang || conf?.buruk || 100) * 1.2,
+        suggestedMax: metrik === 'co2'
+          ? (conf?.baik || 1000) * 2
+          : (conf?.sedang || conf?.buruk || 100) * 1.2,
         ticks: { font: { size: 10 }, color: tickColor, maxTicksLimit: 5, callback: (value) => Math.round(value) },
         grid: { color: gridColor, drawBorder: false },
         beginAtZero: true,
