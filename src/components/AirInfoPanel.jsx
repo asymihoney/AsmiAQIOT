@@ -90,7 +90,7 @@ export default function AirInfoPanel({ isDark, isModal }) {
       {/* ── Tabel CO₂ ASHRAE ── */}
       <div className="aip-section">
         <div className="aip-section-title">Standar CO₂ Indoor</div>
-        <div className="aip-section-sub">Sumber: CO2Meter (June 30, 2025)</div>
+        <div className="aip-section-sub">Sumber: CO2Meter (3 Agustus, 2026)</div>
         <table className="aip-table">
           <thead>
             <tr>
