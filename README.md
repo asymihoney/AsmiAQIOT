@@ -119,5 +119,5 @@ into Supabase.
 ```
 
 ## Alarm Thresholds
-- CO₂ > 1000 ppm ([Permenkes No. 48/2016](https://peraturan.bpk.go.id/Details/113097/permenkes-no-48-tahun-2016) — Indonesian office building indoor air standard)
-- PM2.5 > 150 µg/m³
+- CO₂ > 1000 ppm ([Permenkes No. 48/2016](https://peraturan.bpk.go.id/Details/113097/permenkes-no-48-tahun-2016) — Standar Keselamatan dan Kesehatan Kerja Perkantoran)
+- PM2.5 > 150 µg/m³ ([Permen LHK No. P.14/2020](https://peraturan.bpk.go.id/Details/163466/permen-lhk-no-14-tahun-2020) — Indeks Standar Pencemar Udara)
