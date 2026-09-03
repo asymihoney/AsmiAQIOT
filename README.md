@@ -20,7 +20,8 @@ This repo covers the full data pipeline — device wiring/schematic,
 ESP32 firmware, and the bridge service that moves data from MQTT into 
 the cloud database.
 
-🔗 **Live Dashboard:** https://asmiaqiotdeploy.vercel.app/
+🔗 **Live Dashboard:** https://asmiaqiotdeploy.vercel.app/ 
+*(Note: hosted on Supabase's free tier — the database may be paused due to inactivity and show no data until manually resumed.)*
 
 ## Features
 - Real-time CO₂, PM2.5, temperature & humidity monitoring
